@@ -1,0 +1,671 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>光影瞬间 | 个人摄影作品集</title>
+    <style>
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #121212;
+            color: #f5f5f5;
+            line-height: 1.6;
+        }
+        
+        a {
+            text-decoration: none;
+            color: #f5f5f5;
+            transition: color 0.3s;
+        }
+        
+        a:hover {
+            color: #d4af37;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* 导航栏样式 */
+        header {
+            background-color: rgba(18, 18, 18, 0.9);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #d4af37;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 30px;
+        }
+        
+        nav ul li a {
+            font-size: 1rem;
+            font-weight: 500;
+            position: relative;
+        }
+        
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: #d4af37;
+            transition: width 0.3s;
+        }
+        
+        nav ul li a:hover::after {
+            width: 100%;
+        }
+        
+        .mobile-menu {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        /* 主要内容区域样式 */
+        main {
+            margin-top: 80px;
+            min-height: calc(100vh - 160px);
+        }
+        
+        .hero {
+            height: 80vh;
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
+                        url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        
+        .hero-content h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+        
+        .hero-content p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            max-width: 600px;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: #d4af37;
+            color: #121212;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: #f5f5f5;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* 作品展示区域 */
+        .gallery {
+            padding: 80px 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+            font-size: 2.5rem;
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            width: 80px;
+            height: 3px;
+            background-color: #d4af37;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            height: 250px;
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+        
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+        
+        .gallery-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .gallery-item:hover .gallery-overlay {
+            opacity: 1;
+        }
+        
+        .gallery-overlay h3 {
+            color: #fff;
+            font-size: 1.5rem;
+        }
+        
+        /* 关于页面样式 */
+        .about-content {
+            display: flex;
+            align-items: center;
+            gap: 50px;
+            padding: 80px 0;
+        }
+        
+        .about-img {
+            flex: 1;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .about-img img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .about-text {
+            flex: 1;
+        }
+        
+        .about-text h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #d4af37;
+        }
+        
+        .about-text p {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+        
+        /* 服务页面样式 */
+        .services {
+            padding: 80px 0;
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .service-card {
+            background-color: #1e1e1e;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            transition: transform 0.3s;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .service-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .service-icon {
+            font-size: 3rem;
+            color: #d4af37;
+            margin-bottom: 20px;
+        }
+        
+        .service-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+        
+        /* 联系页面样式 */
+        .contact {
+            padding: 80px 0;
+        }
+        
+        .contact-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+        }
+        
+        .contact-info h3 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #d4af37;
+        }
+        
+        .contact-details {
+            margin-bottom: 30px;
+        }
+        
+        .contact-details p {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .contact-details i {
+            margin-right: 10px;
+            color: #d4af37;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: #1e1e1e;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+        
+        .social-links a:hover {
+            background-color: #d4af37;
+            transform: translateY(-5px);
+        }
+        
+        .contact-form input,
+        .contact-form textarea {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            background-color: #1e1e1e;
+            border: 1px solid #333;
+            border-radius: 5px;
+            color: #f5f5f5;
+            font-size: 1rem;
+        }
+        
+        .contact-form textarea {
+            height: 150px;
+            resize: vertical;
+        }
+        
+        /* 页脚样式 */
+        footer {
+            background-color: #1e1e1e;
+            padding: 30px 0;
+            text-align: center;
+            margin-top: 50px;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .copyright {
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            nav {
+                width: 100%;
+                margin-top: 15px;
+                display: none;
+            }
+            
+            nav.active {
+                display: block;
+            }
+            
+            nav ul {
+                flex-direction: column;
+            }
+            
+            nav ul li {
+                margin: 10px 0;
+            }
+            
+            .mobile-menu {
+                display: block;
+                position: absolute;
+                top: 20px;
+                right: 20px;
+            }
+            
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+            
+            .about-content {
+                flex-direction: column;
+            }
+            
+            .contact-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+        
+        /* 页面特定样式 */
+        .page-content {
+            padding: 80px 0;
+        }
+        
+        /* 隐藏除主页外的其他页面内容 */
+        #about-page, #portfolio-page, #services-page, #contact-page {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header>
+        <div class="container nav-container">
+            <div class="logo">光影瞬间</div>
+            <div class="mobile-menu">☰</div>
+            <nav>
+                <ul>
+                    <li><a href="#home-page">首页</a></li>
+                    <li><a href="#about-page">关于我</a></li>
+                    <li><a href="#portfolio-page">作品集</a></li>
+                    <li><a href="#services-page">服务项目</a></li>
+                    <li><a href="#contact-page">联系我</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 主页内容 -->
+    <main id="home-page">
+        <!-- 英雄区域 -->
+        <section class="hero">
+            <div class="hero-content">
+                <h1>捕捉生活中的美好瞬间</h1>
+                <p>用镜头记录时光，用光影讲述故事。专业摄影师，专注于人像、风景和纪实摄影。</p>
+                <a href="#portfolio-page" class="btn">查看作品</a>
+            </div>
+        </section>
+
+        <!-- 作品展示 -->
+        <section class="gallery">
+            <div class="container">
+                <h2 class="section-title">精选作品</h2>
+                <div class="gallery-grid">
+                    <div class="gallery-item">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="人像摄影">
+                        <div class="gallery-overlay">
+                            <h3>人像摄影</h3>
+                        </div>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="https://images.unsplash.com/photo-1506260408121-e353d10b87c7?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="风景摄影">
+                        <div class="gallery-overlay">
+                            <h3>风景摄影</h3>
+                        </div>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="https://images.unsplash.com/photo-1551963831-b3b1ca40c98e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="纪实摄影">
+                        <div class="gallery-overlay">
+                            <h3>纪实摄影</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 关于我页面 -->
+    <main id="about-page">
+        <div class="container page-content">
+            <h2 class="section-title">关于我</h2>
+            <div class="about-content">
+                <div class="about-img">
+                    <img src="https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="摄影师">
+                </div>
+                <div class="about-text">
+                    <h2>用镜头讲述故事的人</h2>
+                    <p>我是吴翰哲，一名专业摄影师，拥有8年的摄影经验。我热爱用镜头捕捉生活中的美好瞬间，无论是人物的情感表达，还是大自然的壮丽景色，都是我创作的源泉。</p>
+                    <p>我的摄影风格注重自然、真实和情感表达，擅长通过光影的运用来营造独特的氛围和情感共鸣。</p>
+                    <p>曾参与多个摄影展览，作品多次在国内外摄影比赛中获奖。我相信每一张照片背后都有一个独特的故事，而我正是那个用镜头讲述故事的人。</p>
+                    <a href="#contact-page" class="btn">联系我</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 作品集页面 -->
+    <main id="portfolio-page">
+        <div class="container page-content">
+            <h2 class="section-title">作品集</h2>
+            <div class="gallery-grid">
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="作品1">
+                    <div class="gallery-overlay">
+                        <h3>城市之光</h3>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="作品2">
+                    <div class="gallery-overlay">
+                        <h3>自然之美</h3>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="作品3">
+                    <div class="gallery-overlay">
+                        <h3>人物肖像</h3>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1519125323398-675f0ddb6308?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="作品4">
+                    <div class="gallery-overlay">
+                        <h3>生活纪实</h3>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="作品5">
+                    <div class="gallery-overlay">
+                        <h3>情感表达</h3>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="作品6">
+                    <div class="gallery-overlay">
+                        <h3>创意摄影</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 服务项目页面 -->
+    <main id="services-page">
+        <div class="container page-content">
+            <h2 class="section-title">服务项目</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">📷</div>
+                    <h3>人像摄影</h3>
+                    <p>专业人像摄影，捕捉最自然、真实的情感表达。包括个人写真、情侣照、家庭照等。</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🏞️</div>
+                    <h3>风景摄影</h3>
+                    <p>记录大自然的壮丽景色，从山川湖海到城市风光，展现不同地域的独特魅力。</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🎬</div>
+                    <h3>活动纪实</h3>
+                    <p>婚礼、庆典、商业活动等纪实摄影，捕捉每一个重要时刻和精彩瞬间。</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🎨</div>
+                    <h3>后期处理</h3>
+                    <p>专业的照片后期处理服务，包括色彩校正、精修、创意合成等。</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">📚</div>
+                    <h3>摄影教学</h3>
+                    <p>一对一或小班制摄影教学，从基础到进阶，帮助您提升摄影技巧。</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🖼️</div>
+                    <h3>作品输出</h3>
+                    <p>高品质照片打印、装裱服务，让您的作品以最佳形式呈现。</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 联系我页面 -->
+    <main id="contact-page">
+        <div class="container page-content">
+            <h2 class="section-title">联系我</h2>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h3>让我们开始合作吧</h3>
+                    <p>如果您对我的作品感兴趣，或者有任何摄影相关的需求，欢迎随时联系我。</p>
+                    <div class="contact-details">
+                        <p><i>📧</i> contact@guangying.com</p>
+                        <p><i>📞</i> +86 139 7135 3648</p>
+                        <p><i>📍</i> 武汉市武昌区</p>
+                    </div>
+                    <div class="social-links">
+                        <a href="#"><i>📘</i></a>
+                        <a href="#"><i>📷</i></a>
+                        <a href="#"><i>🐦</i></a>
+                        <a href="#"><i>💼</i></a>
+                    </div>
+                </div>
+                <div class="contact-form">
+                    <form>
+                        <input type="text" placeholder="您的姓名" required>
+                        <input type="email" placeholder="您的邮箱" required>
+                        <input type="text" placeholder="主题" required>
+                        <textarea placeholder="请简要描述您的需求..." required></textarea>
+                        <button type="submit" class="btn">发送消息</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="container footer-content">
+            <div class="logo">光影瞬间</div>
+            <div class="copyright">© 2023 光影瞬间摄影工作室. 保留所有权利.</div>
+        </div>
+    </footer>
+
+    <script>
+        // 导航菜单切换
+        document.querySelector('.mobile-menu').addEventListener('click', function() {
+            document.querySelector('nav').classList.toggle('active');
+        });
+
+        // 页面导航
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetPage = this.getAttribute('href').substring(1);
+                
+                // 隐藏所有页面
+                document.querySelectorAll('main').forEach(page => {
+                    page.style.display = 'none';
+                });
+                
+                // 显示目标页面
+                document.getElementById(targetPage).style.display = 'block';
+                
+                // 在移动设备上关闭菜单
+                if (window.innerWidth <= 768) {
+                    document.querySelector('nav').classList.remove('active');
+                }
+                
+                // 滚动到顶部
+                window.scrollTo(0, 0);
+            });
+        });
+
+        // 默认显示主页
+        document.getElementById('home-page').style.display = 'block';
+    </script>
+</body>
+</html>
